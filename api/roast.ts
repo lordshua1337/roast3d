@@ -32,13 +32,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Anthropic API error:", response.status, errorData);
-      return res.status(500).json({
-        error: (errorData as Record<string, unknown>).error
-          ? String((errorData as Record<string, unknown>).error)
-          : `API error ${response.status}`,
-      });
+      const errorData = await response.json().catch(() => ({})) as Record<string, unknown>;
+      console.error("Anthropic API error:", response.status, JSON.stringify(errorData));
+      const errObj = errorData.error as Record<string, unknown> | undefined;
+      const errMsg = errObj?.message ? String(errObj.message) : `API error ${response.status}`;
+      return res.status(500).json({ error: errMsg });
     }
 
     const data = await response.json();
