@@ -63,7 +63,7 @@ export function FullLoader({ mode }: FullLoaderProps) {
         }}
       >
         <div style={{ marginBottom: 40, textAlign: "center" }}>
-          <Logo size="md" />
+          <Logo size="md" flames />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12, minHeight: 300 }}>
           {lines.map((line, i) => (

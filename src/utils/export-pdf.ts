@@ -46,7 +46,7 @@ export function exportRoastPDF(r: RoastResult): void {
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet">
     <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Chakra Petch',sans-serif;color:#111;padding:48px;max-width:800px;margin:0 auto}@media print{body{padding:24px}}</style>
   </head><body>
-    <div style="font-family:Permanent Marker;font-size:20px;background:linear-gradient(180deg,#ffd700,#ff4500,#8b0000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px">ROAST3D</div>
+    <img src="${window.location.origin}/logo.png" alt="ROAST3D" style="height:32px;margin-bottom:4px" />
     <div style="font-size:11px;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">${escapeHtml(r.site_name)} &middot; ${escapeHtml(r.vibe)} energy</div>
     <div style="font-family:Permanent Marker;font-size:44px">ROAST REPORT</div>
     <div style="width:60px;height:4px;background:#FF3D00;margin:8px 0 32px"></div>
