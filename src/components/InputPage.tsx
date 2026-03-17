@@ -214,10 +214,10 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
               }}
             />
             {[
-              { text: "KILL IT", bg: "#e53e3e", t: 20, r: 30, rot: 6, d: 0, I: Skull },
-              { text: "CTA", bg: "#f0d000", t: 100, r: 10, rot: -4, d: 0.6, dark: true, I: Crosshair },
-              { text: "COPY", bg: "#4dc9f6", b: 60, r: 20, rot: 7, d: 1.1, dark: true, I: PenLine },
-              { text: "PRO TIP", bg: "#48bb78", b: 10, l: 30, rot: -5, d: 1.6, dark: true, I: Check },
+              { text: "KILL IT", bg: "#e53e3e", t: 30, r: 80, rot: 6, d: 0, I: Skull },
+              { text: "CTA", bg: "#f0d000", t: 130, r: 50, rot: -4, d: 0.6, dark: true, I: Crosshair },
+              { text: "COPY", bg: "#4dc9f6", b: 80, r: 60, rot: 7, d: 1.1, dark: true, I: PenLine },
+              { text: "PRO TIP", bg: "#48bb78", b: 20, l: 60, rot: -5, d: 1.6, dark: true, I: Check },
             ].map((b, i) => (
               <div
                 key={i}
