@@ -10,53 +10,36 @@ export function FlameBar({ children }: FlameBarProps) {
           position: relative;
         }
 
-        /* Animated fire glow around the whole input */
+        /* Subtle ambient glow -- just warmth, not a spotlight */
         .flame-bar-wrap::before {
           content: '';
           position: absolute;
-          inset: -3px;
+          inset: -2px;
           border-radius: 18px;
           background: conic-gradient(
             from var(--flame-angle, 0deg),
-            #ff3d00, #ff6a00, #ff9500, #ffb700,
-            #ff9500, #ff6a00, #ff3d00, #cc2200,
-            #ff3d00
+            transparent 20%,
+            rgba(255,61,0,0.15) 30%,
+            rgba(255,150,0,0.2) 35%,
+            rgba(255,61,0,0.15) 40%,
+            transparent 50%,
+            transparent 70%,
+            rgba(255,80,0,0.12) 80%,
+            rgba(255,120,0,0.18) 85%,
+            rgba(255,80,0,0.12) 90%,
+            transparent 100%
           );
-          opacity: 0.5;
-          filter: blur(6px);
+          filter: blur(4px);
           z-index: -1;
-          animation: flame-rotate 3s linear infinite, flame-pulse 2s ease-in-out infinite;
+          animation: flame-rotate 4s linear infinite;
         }
 
-        /* Inner glow layer */
-        .flame-bar-wrap::after {
-          content: '';
+        /* Flame tongues container */
+        .flame-tongue {
           position: absolute;
-          inset: -1px;
-          border-radius: 17px;
-          background: conic-gradient(
-            from var(--flame-angle2, 180deg),
-            transparent 30%,
-            rgba(255,61,0,0.3) 45%,
-            rgba(255,150,0,0.4) 50%,
-            rgba(255,61,0,0.3) 55%,
-            transparent 70%
-          );
-          opacity: 0.7;
-          filter: blur(2px);
-          z-index: -1;
-          animation: flame-rotate-reverse 2.5s linear infinite;
-        }
-
-        /* Flame tongues rising from bottom */
-        .flame-bar-wrap .flame-tongue {
-          position: absolute;
-          bottom: -2px;
-          width: 8px;
-          height: 20px;
-          border-radius: 50% 50% 20% 20%;
-          z-index: -1;
-          filter: blur(2px);
+          bottom: -4px;
+          z-index: 6;
+          pointer-events: none;
           transform-origin: bottom center;
         }
 
@@ -66,63 +49,62 @@ export function FlameBar({ children }: FlameBarProps) {
           inherits: false;
         }
 
-        @property --flame-angle2 {
-          syntax: '<angle>';
-          initial-value: 180deg;
-          inherits: false;
-        }
-
         @keyframes flame-rotate {
           to { --flame-angle: 360deg; }
         }
 
-        @keyframes flame-rotate-reverse {
-          to { --flame-angle2: -180deg; }
+        @keyframes flick-a {
+          0%, 100% { height: 16px; opacity: 0.8; transform: scaleX(1) rotate(-2deg); }
+          20% { height: 24px; opacity: 0.9; transform: scaleX(0.7) rotate(4deg); }
+          40% { height: 12px; opacity: 0.6; transform: scaleX(1.2) rotate(-1deg); }
+          60% { height: 28px; opacity: 0.95; transform: scaleX(0.6) rotate(5deg); }
+          80% { height: 18px; opacity: 0.7; transform: scaleX(0.9) rotate(-3deg); }
         }
 
-        @keyframes flame-pulse {
-          0%, 100% { opacity: 0.35; filter: blur(6px); }
-          50% { opacity: 0.6; filter: blur(8px); }
+        @keyframes flick-b {
+          0%, 100% { height: 12px; opacity: 0.7; transform: scaleX(0.9) rotate(1deg); }
+          25% { height: 20px; opacity: 0.85; transform: scaleX(0.65) rotate(-3deg); }
+          50% { height: 26px; opacity: 0.9; transform: scaleX(0.55) rotate(6deg); }
+          75% { height: 14px; opacity: 0.6; transform: scaleX(1.1) rotate(-2deg); }
         }
 
-        @keyframes tongue-flicker-1 {
-          0%, 100% { height: 14px; opacity: 0.7; transform: scaleX(1) rotate(-2deg); }
-          25% { height: 22px; opacity: 0.9; transform: scaleX(0.8) rotate(3deg); }
-          50% { height: 18px; opacity: 0.6; transform: scaleX(1.1) rotate(-1deg); }
-          75% { height: 26px; opacity: 0.85; transform: scaleX(0.7) rotate(4deg); }
-        }
-
-        @keyframes tongue-flicker-2 {
-          0%, 100% { height: 18px; opacity: 0.6; transform: scaleX(0.9) rotate(2deg); }
-          30% { height: 28px; opacity: 0.8; transform: scaleX(0.7) rotate(-3deg); }
-          60% { height: 12px; opacity: 0.5; transform: scaleX(1.2) rotate(1deg); }
-          80% { height: 24px; opacity: 0.9; transform: scaleX(0.8) rotate(-4deg); }
-        }
-
-        @keyframes tongue-flicker-3 {
-          0%, 100% { height: 10px; opacity: 0.5; transform: scaleX(1) rotate(1deg); }
-          20% { height: 20px; opacity: 0.8; transform: scaleX(0.6) rotate(-2deg); }
-          45% { height: 16px; opacity: 0.7; transform: scaleX(1.1) rotate(3deg); }
-          70% { height: 24px; opacity: 0.85; transform: scaleX(0.7) rotate(-1deg); }
+        @keyframes flick-c {
+          0%, 100% { height: 10px; opacity: 0.6; transform: scaleX(1) rotate(2deg); }
+          30% { height: 22px; opacity: 0.85; transform: scaleX(0.7) rotate(-4deg); }
+          55% { height: 16px; opacity: 0.75; transform: scaleX(0.85) rotate(3deg); }
+          80% { height: 26px; opacity: 0.9; transform: scaleX(0.5) rotate(-5deg); }
         }
       `}</style>
 
-      {/* Flame tongues along bottom edge */}
-      {[10, 18, 28, 38, 50, 60, 72, 85, 92].map((pct, i) => (
+      {/* Flame tongues -- tapered gradient shapes flickering up from bottom */}
+      {[
+        { pct: 8, w: 7, anim: "a", dur: 0.7, delay: 0 },
+        { pct: 15, w: 5, anim: "b", dur: 0.9, delay: 0.1 },
+        { pct: 22, w: 8, anim: "c", dur: 0.8, delay: 0.25 },
+        { pct: 30, w: 6, anim: "a", dur: 1.0, delay: 0.15 },
+        { pct: 38, w: 9, anim: "b", dur: 0.75, delay: 0.3 },
+        { pct: 46, w: 5, anim: "c", dur: 0.85, delay: 0.05 },
+        { pct: 54, w: 7, anim: "a", dur: 0.95, delay: 0.2 },
+        { pct: 62, w: 8, anim: "b", dur: 0.7, delay: 0.35 },
+        { pct: 70, w: 6, anim: "c", dur: 0.9, delay: 0.1 },
+        { pct: 78, w: 9, anim: "a", dur: 0.8, delay: 0.25 },
+        { pct: 85, w: 5, anim: "b", dur: 1.0, delay: 0.15 },
+        { pct: 92, w: 7, anim: "c", dur: 0.75, delay: 0.3 },
+      ].map((f, i) => (
         <span
           key={i}
           className="flame-tongue"
           style={{
-            left: `${pct}%`,
-            width: 6 + (i % 3) * 3,
-            background: `radial-gradient(ellipse at bottom, ${
-              i % 3 === 0
-                ? "rgba(255,180,0,0.8), rgba(255,80,0,0.4), transparent"
-                : i % 3 === 1
-                  ? "rgba(255,100,0,0.7), rgba(255,40,0,0.3), transparent"
-                  : "rgba(255,200,50,0.6), rgba(255,100,0,0.3), transparent"
-            })`,
-            animation: `tongue-flicker-${(i % 3) + 1} ${0.8 + (i % 4) * 0.3}s ease-in-out ${i * 0.15}s infinite`,
+            left: `${f.pct}%`,
+            width: f.w,
+            borderRadius: "50% 50% 20% 20%",
+            background:
+              f.anim === "a"
+                ? "linear-gradient(to top, rgba(255,60,0,0.9), rgba(255,150,0,0.6), rgba(255,200,50,0.2), transparent)"
+                : f.anim === "b"
+                  ? "linear-gradient(to top, rgba(255,80,0,0.85), rgba(255,120,0,0.5), rgba(255,180,0,0.15), transparent)"
+                  : "linear-gradient(to top, rgba(255,40,0,0.8), rgba(255,100,0,0.5), rgba(255,160,40,0.2), transparent)",
+            animation: `flick-${f.anim} ${f.dur}s ease-in-out ${f.delay}s infinite`,
           }}
         />
       ))}
