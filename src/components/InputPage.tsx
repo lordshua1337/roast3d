@@ -78,13 +78,13 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   }}
                   className="fu"
                   style={{
-                    padding: "12px 24px",
-                    borderRadius: 12,
+                    padding: "6px 18px",
+                    borderRadius: 8,
                     cursor: "pointer",
-                    fontSize: 13,
-                    border: tab === t.k ? "2px solid #FF3D00" : "2px solid rgba(255,255,255,.08)",
-                    background: tab === t.k ? "rgba(255,61,0,.15)" : "transparent",
-                    color: tab === t.k ? "#FF3D00" : "rgba(255,255,255,.35)",
+                    fontSize: 11,
+                    border: tab === t.k ? "1px solid rgba(255,61,0,.4)" : "1px solid rgba(255,255,255,.06)",
+                    background: tab === t.k ? "rgba(255,61,0,.08)" : "transparent",
+                    color: tab === t.k ? "rgba(255,61,0,.6)" : "rgba(255,255,255,.2)",
                     display: "flex",
                     alignItems: "center",
                     gap: 8,
