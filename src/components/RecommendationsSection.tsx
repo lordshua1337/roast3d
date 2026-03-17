@@ -11,7 +11,7 @@ export function RecommendationsSection({ recommendations, onRoadmap, onUpgrade }
   return (
     <div style={{ marginBottom: 48, animation: "fadeUp .5s .4s cubic-bezier(.16,1,.3,1) both" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-        <h3 className="fd" style={{ fontSize: 24, color: "#111", display: "flex", alignItems: "center", gap: 10 }}>
+        <h3 className="fu" style={{ fontSize: 24, color: "#111", display: "flex", alignItems: "center", gap: 10 }}>
           <FlaskConical size={22} />
           Recommendations
         </h3>

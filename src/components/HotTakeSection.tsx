@@ -32,23 +32,31 @@ export function HotTakeSection({ hotTake, potential }: HotTakeSectionProps) {
           pointerEvents: "none",
         }}
       />
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <Target size={24} color="#FF3D00" />
-        <span className="fm" style={{ fontSize: 10, color: "rgba(255,255,255,.6)", letterSpacing: 4, textTransform: "uppercase" }}>
+
+      {/* Eyebrow -- small and muted */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+        <Target size={18} color="#FF3D00" />
+        <span className="fm" style={{ fontSize: 10, color: "rgba(255,255,255,.4)", letterSpacing: 4, textTransform: "uppercase" }}>
           THE ONE THING THAT MATTERS
         </span>
       </div>
+
+      {/* Big headline -- dominates, premium feel */}
       <h3
-        className="fb2"
-        style={{ fontSize: "clamp(36px,7vw,56px)", color: "#fff", lineHeight: 1.05, marginBottom: 24, letterSpacing: 1 }}
+        className="fu"
+        style={{ fontSize: "clamp(32px,6vw,52px)", color: "#fff", lineHeight: 1.05, marginBottom: 28, fontWeight: 700, letterSpacing: 0.5 }}
       >
         IF YOU FIX NOTHING ELSE, FIX THIS.
       </h3>
+
+      {/* Potential -- subordinate, lighter */}
       {potential && (
-        <p className="fb" style={{ fontSize: 17, color: "rgba(255,255,255,.45)", lineHeight: 1.7, marginBottom: 20, maxWidth: 600 }}>
+        <p className="fb" style={{ fontSize: 15, color: "rgba(255,255,255,.35)", lineHeight: 1.7, marginBottom: 20, maxWidth: 600 }}>
           {potential}
         </p>
       )}
+
+      {/* Hot take -- main body, brighter and larger */}
       <p className="fb" style={{ fontSize: 20, color: "rgba(255,255,255,.9)", lineHeight: 1.75, maxWidth: 640 }}>
         {hotTake}
       </p>

@@ -128,54 +128,18 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
       </div>
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 28px 80px" }}>
-        {/* Title */}
+        {/* Title block */}
         <div style={{ marginBottom: 32, animation: "fadeUp .5s cubic-bezier(.16,1,.3,1)" }}>
           <p className="fm" style={{ fontSize: 11, color: "#999", letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>
             {result.site_name} &middot; {result.vibe} energy
           </p>
-          <h1 className="fd" style={{ fontSize: "clamp(32px,7vw,56px)", color: "#111", lineHeight: 1 }}>
+          <h1 className="fu" style={{ fontSize: "clamp(32px,7vw,56px)", color: "#111", lineHeight: 1 }}>
             ROAST REPORT
           </h1>
           <div style={{ width: 80, height: 4, background: "#FF3D00", borderRadius: 2, marginTop: 8 }} />
         </div>
 
-        {/* Diagnostics grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            gap: 12,
-            marginBottom: 40,
-            animation: "fadeUp .5s .05s cubic-bezier(.16,1,.3,1) both",
-          }}
-        >
-          <DiagCard
-            label="Conversion" Ic={TrendingUp}
-            grade={diag.conversion?.grade || "C"}
-            subs={diag.conversion?.subs || [{ label: "Funnel Clarity", grade: "C" }, { label: "CTA Strength", grade: "C" }, { label: "Value Prop", grade: "C" }]}
-            delay={0.1}
-          />
-          <DiagCard
-            label="Copy" Ic={Type}
-            grade={diag.copy_clarity?.grade || "C"}
-            subs={diag.copy_clarity?.subs || [{ label: "Reading Level", grade: "C" }, { label: "Message Match", grade: "C" }, { label: "Specificity", grade: "C" }]}
-            delay={0.15}
-          />
-          <DiagCard
-            label="Speed" Ic={Gauge}
-            grade={diag.performance?.grade || "C"}
-            subs={diag.performance?.subs || [{ label: "Load Speed", grade: "C" }, { label: "Asset Weight", grade: "C" }, { label: "Core Vitals", grade: "C" }]}
-            delay={0.2}
-          />
-          <DiagCard
-            label="Mobile" Ic={MonitorSmartphone}
-            grade={diag.mobile?.grade || "C"}
-            subs={diag.mobile?.subs || [{ label: "Responsive", grade: "C" }, { label: "Touch Targets", grade: "C" }, { label: "Viewport Fit", grade: "C" }]}
-            delay={0.25}
-          />
-        </div>
-
-        {/* Verdict with ring */}
+        {/* Overall verdict + ring -- FIRST THING THEY SEE */}
         <div
           style={{
             display: "grid",
@@ -183,7 +147,7 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
             gap: 40,
             alignItems: "center",
             marginBottom: 48,
-            animation: "fadeUp .5s .1s cubic-bezier(.16,1,.3,1) both",
+            animation: "fadeUp .5s .05s cubic-bezier(.16,1,.3,1) both",
           }}
         >
           <Ring score={s} size={200} />
@@ -191,18 +155,63 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
             <p className="fm" style={{ fontSize: 10, color: "#bbb", letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>
               VERDICT
             </p>
-            <h2 className="fd" style={{ fontSize: "clamp(24px,4vw,36px)", color, lineHeight: 1.15, marginBottom: 12 }}>
+            <h2 className="fu" style={{ fontSize: "clamp(24px,4vw,36px)", color, lineHeight: 1.15, marginBottom: 12 }}>
               {result.verdict_name}
             </h2>
-            <p className="fb" style={{ fontSize: 17, color: "#666", lineHeight: 1.6, fontStyle: "italic", maxWidth: 440 }}>
-              "{result.one_liner}"
+            <p className="fb" style={{ fontSize: 15, color: "#888", lineHeight: 1.5, fontStyle: "italic", marginBottom: 16, maxWidth: 440 }}>
+              &ldquo;{result.one_liner}&rdquo;
             </p>
+            {result.roast_paragraph && (
+              <p className="fb" style={{ fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 500 }}>
+                {result.roast_paragraph}
+              </p>
+            )}
           </div>
+        </div>
+
+        {/* Diagnostics grid -- fuller, premium cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4,1fr)",
+            gap: 12,
+            marginBottom: 48,
+            animation: "fadeUp .5s .1s cubic-bezier(.16,1,.3,1) both",
+          }}
+        >
+          <DiagCard
+            label="Conversion" Ic={TrendingUp}
+            grade={diag.conversion?.grade || "C"}
+            summary={diag.conversion?.summary}
+            subs={diag.conversion?.subs || [{ label: "Funnel Clarity", grade: "C" }, { label: "CTA Strength", grade: "C" }, { label: "Value Prop", grade: "C" }]}
+            delay={0.1}
+          />
+          <DiagCard
+            label="Copy" Ic={Type}
+            grade={diag.copy_clarity?.grade || "C"}
+            summary={diag.copy_clarity?.summary}
+            subs={diag.copy_clarity?.subs || [{ label: "Reading Level", grade: "C" }, { label: "Message Match", grade: "C" }, { label: "Specificity", grade: "C" }]}
+            delay={0.15}
+          />
+          <DiagCard
+            label="Speed" Ic={Gauge}
+            grade={diag.performance?.grade || "C"}
+            summary={diag.performance?.summary}
+            subs={diag.performance?.subs || [{ label: "Load Speed", grade: "C" }, { label: "Asset Weight", grade: "C" }, { label: "Core Vitals", grade: "C" }]}
+            delay={0.2}
+          />
+          <DiagCard
+            label="Mobile" Ic={MonitorSmartphone}
+            grade={diag.mobile?.grade || "C"}
+            summary={diag.mobile?.summary}
+            subs={diag.mobile?.subs || [{ label: "Responsive", grade: "C" }, { label: "Touch Targets", grade: "C" }, { label: "Viewport Fit", grade: "C" }]}
+            delay={0.25}
+          />
         </div>
 
         {/* Category breakdown */}
         <div style={{ marginBottom: 48, animation: "fadeUp .5s .15s cubic-bezier(.16,1,.3,1) both" }}>
-          <h3 className="fd" style={{ fontSize: 24, color: "#111", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+          <h3 className="fu" style={{ fontSize: 24, color: "#111", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
             <Skull size={22} />
             The Breakdown
           </h3>
@@ -255,7 +264,7 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 10 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <CatIcon size={isBig ? 20 : 16} color="#555" />
-                      <span className="fd" style={{ fontSize: isBig ? 22 : 18, color: "#111" }}>
+                      <span className="fu" style={{ fontSize: isBig ? 20 : 16, color: "#111" }}>
                         {cat.label}
                       </span>
                     </div>
@@ -311,7 +320,7 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
             Compare Mode -- coming soon
           </p>
           <p className="fb" style={{ fontSize: 13, color: "#999" }}>
-            Roast a competitor's page. See side-by-side.
+            Roast a competitor&apos;s page. See side-by-side.
           </p>
         </div>
 

@@ -56,7 +56,7 @@ export function Roadmap({ recs, siteName, onBack }: RoadmapProps) {
         >
           {siteName}
         </p>
-        <h1 className="fd" style={{ fontSize: "clamp(28px,6vw,44px)", color: "#111", marginBottom: 4 }}>
+        <h1 className="fu" style={{ fontSize: "clamp(28px,6vw,44px)", color: "#111", marginBottom: 4 }}>
           ROAST ROADMAP
         </h1>
         <div style={{ width: 60, height: 4, background: "#FF3D00", borderRadius: 2, marginBottom: 24 }} />

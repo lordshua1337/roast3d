@@ -6,6 +6,7 @@ export interface SubGrade {
 export interface DiagnosticCategory {
   grade: string;
   subs: SubGrade[];
+  summary?: string;
 }
 
 export interface Diagnostics {
@@ -32,6 +33,7 @@ export interface RoastResult {
   one_liner: string;
   verdict_name: string;
   overall_score: number;
+  roast_paragraph: string;
   diagnostics: Diagnostics;
   categories: Record<string, CategoryScore>;
   hot_take: string;
