@@ -90,26 +90,34 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
             >
               Only one way to find out.
             </p>
-            <svg
-              width="180"
-              height="60"
-              viewBox="0 0 180 60"
-              fill="none"
-              style={{ marginBottom: 12, marginLeft: 8, display: "block" }}
-            >
-              <path
-                d="M4 4 C 40 4, 60 8, 90 20 S 150 50, 170 52"
-                stroke="rgba(255,255,255,0.35)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
+            <div style={{ position: "relative" }}>
+              <svg
+                width="220"
+                height="120"
+                viewBox="0 0 220 120"
                 fill="none"
-              />
-              <polygon
-                points="164,46 174,54 162,54"
-                fill="rgba(255,255,255,0.35)"
-              />
-            </svg>
-            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+                style={{
+                  position: "absolute",
+                  top: -8,
+                  left: 240,
+                  pointerEvents: "none",
+                  zIndex: 2,
+                }}
+              >
+                <path
+                  d="M4 4 C 20 6, 50 10, 70 28 C 90 46, 80 60, 100 78 C 115 92, 140 100, 180 108"
+                  stroke="rgba(255,255,255,0.3)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeDasharray="4 3"
+                  fill="none"
+                />
+                <polygon
+                  points="174,102 184,110 172,112"
+                  fill="rgba(255,255,255,0.3)"
+                />
+              </svg>
+              <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
               {[
                 { k: "lp" as TabType, l: "Landing Page", I: Smartphone },
                 { k: "ad" as TabType, l: "Ad Creative", I: Clapperboard },
@@ -138,6 +146,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   {t.l}
                 </button>
               ))}
+            </div>
             </div>
             <FlameBar>
             <div
