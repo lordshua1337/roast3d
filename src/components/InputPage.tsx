@@ -196,7 +196,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
             style={{
               flex: "0 0 280px",
               position: "relative",
-              height: 400,
+              height: 460,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -206,7 +206,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
               src="/hero-phone.png"
               alt="Landing page getting roasted"
               style={{
-                height: 360,
+                height: 420,
                 width: "auto",
                 borderRadius: 12,
                 position: "relative",
