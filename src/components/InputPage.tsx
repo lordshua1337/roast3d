@@ -1,7 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import {
   Skull, Crosshair, PenLine, Check,
-  Smartphone, Clapperboard, Flame,
+  Smartphone, Clapperboard, Flame, Upload, X,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import type { TabType } from "../types/roast";
@@ -13,10 +13,36 @@ interface InputPageProps {
   setInput: (v: string) => void;
   error: string;
   onRoast: () => void;
+  roastBtnRef?: React.RefObject<HTMLButtonElement | null>;
+  adImage: string | null;
+  setAdImage: (v: string | null) => void;
 }
 
-export function InputPage({ tab, setTab, input, setInput, error, onRoast }: InputPageProps) {
+export function InputPage({ tab, setTab, input, setInput, error, onRoast, roastBtnRef, adImage, setAdImage }: InputPageProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAdImage(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, [setAdImage]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }, [handleFile]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => ref.current?.focus(), 60);
@@ -142,6 +168,77 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
             >
               Paste the URL. We'll prove it, then help you fix it — for free.
             </p>
+            {tab === "ad" && (
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={() => setDragOver(false)}
+                onClick={() => !adImage && fileRef.current?.click()}
+                style={{
+                  border: dragOver
+                    ? "2px solid #FF3D00"
+                    : adImage
+                      ? "2px solid rgba(255,255,255,.12)"
+                      : "2px dashed rgba(255,255,255,.12)",
+                  borderRadius: 16,
+                  padding: adImage ? 0 : "28px 20px",
+                  marginBottom: 12,
+                  textAlign: "center",
+                  cursor: adImage ? "default" : "pointer",
+                  background: dragOver ? "rgba(255,61,0,.06)" : "rgba(255,255,255,.02)",
+                  transition: "all .2s",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFile(file);
+                  }}
+                  style={{ display: "none" }}
+                />
+                {adImage ? (
+                  <div style={{ position: "relative" }}>
+                    <img
+                      src={adImage}
+                      alt="Ad creative"
+                      style={{ width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 14, display: "block" }}
+                    />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setAdImage(null); }}
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        background: "rgba(0,0,0,.7)",
+                        border: "1px solid rgba(255,255,255,.2)",
+                        borderRadius: 8,
+                        color: "#fff",
+                        width: 28,
+                        height: 28,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <Upload size={20} color="rgba(255,255,255,.2)" style={{ margin: "0 auto 8px" }} />
+                    <p className="fm" style={{ fontSize: 12, color: "rgba(255,255,255,.25)" }}>
+                      Drop your ad screenshot here, or click to upload
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
@@ -176,22 +273,23 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                 }}
               />
               <button
+                ref={roastBtnRef}
                 onClick={onRoast}
-                disabled={!input.trim()}
+                disabled={tab === "ad" ? (!input.trim() && !adImage) : !input.trim()}
                 className="fu"
                 style={{
-                  background: !input.trim()
+                  background: (tab === "ad" ? (!input.trim() && !adImage) : !input.trim())
                     ? "rgba(255,255,255,.04)"
                     : "linear-gradient(135deg,#FF3D00,#e63600)",
                   border: "none",
-                  color: !input.trim() ? "rgba(255,255,255,.15)" : "#fff",
+                  color: (tab === "ad" ? (!input.trim() && !adImage) : !input.trim()) ? "rgba(255,255,255,.15)" : "#fff",
                   padding: "18px 36px",
                   margin: 6,
                   borderRadius: 12,
                   fontSize: 14,
-                  cursor: !input.trim() ? "not-allowed" : "pointer",
+                  cursor: (tab === "ad" ? (!input.trim() && !adImage) : !input.trim()) ? "not-allowed" : "pointer",
                   whiteSpace: "nowrap",
-                  boxShadow: input.trim() ? "0 4px 24px rgba(255,61,0,.35)" : "none",
+                  boxShadow: (tab === "ad" ? (input.trim() || adImage) : input.trim()) ? "0 4px 24px rgba(255,61,0,.35)" : "none",
                   display: "flex",
                   alignItems: "center",
                   gap: 6,

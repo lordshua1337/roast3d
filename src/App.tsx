@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { FullLoader } from "./components/FullLoader";
 import { InputPage } from "./components/InputPage";
 import { ReportPage } from "./components/ReportPage";
 import { Roadmap } from "./components/Roadmap";
 import { UpgradeModal } from "./components/UpgradeModal";
+import { EmojiBurst } from "./components/EmojiBurst";
 import { callRoastAPI } from "./utils/api";
 import { LP_CATS, AD_CATS } from "./utils/constants";
 import type { TabType, RoastResult } from "./types/roast";
@@ -16,24 +17,41 @@ export default function App() {
   const [error, setError] = useState("");
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
+  const [burstTrigger, setBurstTrigger] = useState(0);
+  const [burstOrigin, setBurstOrigin] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [adImage, setAdImage] = useState<string | null>(null);
+  const roastBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const cats = tab === "lp" ? LP_CATS : AD_CATS;
 
   const roast = useCallback(() => {
-    if (!input.trim() || loading) return;
+    const hasInput = tab === "ad" ? (input.trim() || adImage) : input.trim();
+    if (!hasInput || loading) return;
+
+    // Fire emoji burst from the button position
+    if (roastBtnRef.current) {
+      const rect = roastBtnRef.current.getBoundingClientRect();
+      setBurstOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    }
+    setBurstTrigger((n) => n + 1);
+
     setLoading(true);
     setError("");
     setResult(null);
     setShowRoadmap(false);
 
-    callRoastAPI(tab, input.trim())
+    const roastInput = tab === "ad" && adImage && !input.trim()
+      ? "[Uploaded ad creative image]"
+      : input.trim();
+
+    callRoastAPI(tab, roastInput)
       .then((data) => setResult(data))
       .catch((e) => {
         console.error(e);
         setError(e.message + ". Try again.");
       })
       .finally(() => setLoading(false));
-  }, [input, loading, tab]);
+  }, [input, loading, tab, adImage]);
 
   const reset = () => {
     setResult(null);
@@ -44,6 +62,7 @@ export default function App() {
 
   return (
     <div>
+      <EmojiBurst trigger={burstTrigger} originX={burstOrigin.x} originY={burstOrigin.y} />
       <style>{`
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Chakra+Petch:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -75,11 +94,14 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
       {!loading && !result && (
         <InputPage
           tab={tab}
-          setTab={(t) => { setTab(t); setError(""); }}
+          setTab={(t) => { setTab(t); setError(""); setAdImage(null); }}
           input={input}
           setInput={setInput}
           error={error}
           onRoast={roast}
+          roastBtnRef={roastBtnRef}
+          adImage={adImage}
+          setAdImage={setAdImage}
         />
       )}
 
