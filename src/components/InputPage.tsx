@@ -66,7 +66,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
         <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 420px", minWidth: 300 }}>
             <h1 className="fu" style={{ fontSize: "clamp(28px,5vw,46px)", lineHeight: 1.15, marginBottom: 20 }}>
-              Unfiltered AI roasts{" "}
+              Your {tab === "lp" ? "landing page" : "ad"} is{" "}
               <span
                 style={{
                   background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
@@ -74,7 +74,11 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                your {tab === "lp" ? "landing page" : "ad creative"}
+                embarrassing
+              </span>
+              <br />
+              <span style={{ fontSize: "clamp(18px,3vw,28px)", color: "rgba(255,255,255,.35)" }}>
+                Let AI prove it.
               </span>
             </h1>
             <p
@@ -87,8 +91,8 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                 maxWidth: 440,
               }}
             >
-              Drop your URL. Get brutally honest feedback. Then fix it with test recommendations that
-              actually work.
+              Paste your URL. Get a brutally honest roast. Then fix it before your
+              competitors screenshot it.
             </p>
             <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
               {[
