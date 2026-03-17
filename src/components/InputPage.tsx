@@ -65,18 +65,29 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "48px 32px 80px", position: "relative", zIndex: 5 }}>
         <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 420px", minWidth: 300 }}>
-            <h1 className="fu" style={{ fontSize: "clamp(28px,5vw,46px)", lineHeight: 1.15, marginBottom: 12 }}>
-              Your{" "}
+            <h1 className="fu" style={{ lineHeight: 0.95, marginBottom: 12 }}>
+              <span style={{ fontSize: "clamp(28px,5vw,46px)", display: "block" }}>
+                Your{" "}
+                <span
+                  style={{
+                    background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {tab === "lp" ? "Landing Page" : "Ad"}
+                </span>
+              </span>
               <span
                 style={{
-                  background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  fontSize: "clamp(72px,14vw,130px)",
+                  display: "block",
+                  letterSpacing: -2,
+                  textTransform: "uppercase",
                 }}
               >
-                {tab === "lp" ? "Landing Page" : "Ad"}
+                Sucks.
               </span>
-              {" "}Sucks.
             </h1>
             <p
               className="fb"
