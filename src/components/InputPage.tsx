@@ -196,59 +196,23 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
             style={{
               flex: "0 0 280px",
               position: "relative",
-              height: 340,
+              height: 400,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <div
+            <img
+              src="/hero-phone.png"
+              alt="Landing page getting roasted"
               style={{
-                width: 220,
-                height: 165,
-                background: "rgba(255,255,255,.02)",
+                height: 360,
+                width: "auto",
                 borderRadius: 12,
-                border: "1px solid rgba(255,255,255,.06)",
                 position: "relative",
-                overflow: "hidden",
-                boxShadow: "0 24px 80px rgba(0,0,0,.6)",
-                transform: "perspective(800px) rotateY(-8deg) rotateX(4deg)",
+                zIndex: 1,
               }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 5,
-                  padding: "8px 10px",
-                  background: "rgba(255,255,255,.03)",
-                }}
-              >
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ff5f57" }} />
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#febc2e" }} />
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
-              </div>
-              <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
-                <div style={{ height: 8, width: "80%", background: "rgba(255,255,255,.06)", borderRadius: 4 }} />
-                <div style={{ height: 6, width: "55%", background: "rgba(255,255,255,.04)", borderRadius: 3 }} />
-                <div style={{ height: 6, width: "90%", background: "rgba(255,255,255,.04)", borderRadius: 3 }} />
-                <div style={{ height: 22, width: "45%", background: "rgba(255,61,0,.12)", borderRadius: 6, marginTop: 6 }} />
-                <div style={{ height: 6, width: "65%", background: "rgba(255,255,255,.04)", borderRadius: 3 }} />
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  top: "38%",
-                  left: "100%",
-                  width: 90,
-                  height: 3,
-                  background: "linear-gradient(90deg,#FF3D00,rgba(255,61,0,.3),transparent)",
-                  transform: "rotate(-18deg)",
-                  transformOrigin: "left center",
-                  boxShadow: "0 0 16px rgba(255,61,0,.7)",
-                  animation: "fp 2s ease-in-out infinite",
-                }}
-              />
-            </div>
+            />
             {[
               { text: "DEAD", bg: "#FF3D00", t: 5, r: -12, rot: 6, d: 0, I: Skull },
               { text: "NO CTA", bg: "#f59e0b", t: 80, r: -32, rot: -4, d: 0.6, dark: true, I: Crosshair },
@@ -273,7 +237,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   boxShadow: `0 4px 20px ${b.bg}55`,
                   animation: `flb 3s ease-in-out ${b.d}s infinite alternate`,
                   border: "2px solid rgba(255,255,255,.1)",
-                  zIndex: 3,
+                  zIndex: 5,
                   whiteSpace: "nowrap",
                   display: "flex",
                   alignItems: "center",
