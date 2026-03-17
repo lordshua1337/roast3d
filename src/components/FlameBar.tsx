@@ -1,159 +1,132 @@
-import { useEffect, useRef } from "react";
-
 interface FlameBarProps {
   children: React.ReactNode;
 }
 
 export function FlameBar({ children }: FlameBarProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const interval = setInterval(() => {
-      const rect = container.getBoundingClientRect();
-
-      // spawn 2-3 flames per tick for density
-      const count = Math.random() < 0.4 ? 3 : 2;
-      for (let n = 0; n < count; n++) {
-        const flame = document.createElement("span");
-
-        // flames rise from the bottom edge primarily, some from sides
-        const edge = Math.random();
-        let x: number;
-        let y: number;
-
-        if (edge < 0.6) {
-          // bottom edge -- most flames come from here
-          x = Math.random() * rect.width;
-          y = rect.height;
-        } else if (edge < 0.75) {
-          // top edge -- heat shimmer rising off the top
-          x = Math.random() * rect.width;
-          y = -4;
-        } else if (edge < 0.88) {
-          // left edge
-          x = -4;
-          y = rect.height * 0.3 + Math.random() * rect.height * 0.7;
-        } else {
-          // right edge
-          x = rect.width + 4;
-          y = rect.height * 0.3 + Math.random() * rect.height * 0.7;
-        }
-
-        const type = Math.random();
-        const duration = Math.random() * 0.6 + 0.5;
-
-        if (type < 0.45) {
-          // tall flame tongues -- the main effect
-          const w = Math.random() * 6 + 4;
-          const h = Math.random() * 16 + 12;
-          const hue = Math.random() * 30 + 10; // 10-40 (red to orange-yellow)
-          const sat = 100;
-          const light = Math.random() * 20 + 50; // 50-70%
-
-          Object.assign(flame.style, {
-            position: "absolute",
-            left: `${x - w / 2}px`,
-            top: `${y}px`,
-            width: `${w}px`,
-            height: `${h}px`,
-            borderRadius: "50% 50% 20% 20%",
-            background: `radial-gradient(ellipse at bottom, hsl(${hue},${sat}%,${light}%) 0%, hsl(${hue + 10},100%,${light - 15}%) 40%, transparent 100%)`,
-            boxShadow: `0 0 ${w + 4}px rgba(255,${Math.floor(Math.random() * 40 + 40)},0,0.5)`,
-            filter: `blur(${Math.random() * 1.5 + 0.5}px)`,
-            pointerEvents: "none",
-            zIndex: "5",
-            opacity: "0",
-          });
-        } else if (type < 0.75) {
-          // glowing embers -- small hot dots
-          const s = Math.random() * 4 + 2;
-          const hue = Math.random() * 25 + 20; // orange-yellow
-          const light = Math.random() * 15 + 65; // bright 65-80%
-
-          Object.assign(flame.style, {
-            position: "absolute",
-            left: `${x - s / 2}px`,
-            top: `${y}px`,
-            width: `${s}px`,
-            height: `${s}px`,
-            borderRadius: "50%",
-            background: `hsl(${hue},100%,${light}%)`,
-            boxShadow: `0 0 ${s * 3}px rgba(255,${Math.floor(Math.random() * 60 + 80)},0,0.7), 0 0 ${s * 6}px rgba(255,60,0,0.3)`,
-            pointerEvents: "none",
-            zIndex: "6",
-            opacity: "0",
-          });
-        } else {
-          // heat distortion wisps -- wide, soft, blurry
-          const w = Math.random() * 14 + 8;
-          const h = Math.random() * 10 + 6;
-
-          Object.assign(flame.style, {
-            position: "absolute",
-            left: `${x - w / 2}px`,
-            top: `${y}px`,
-            width: `${w}px`,
-            height: `${h}px`,
-            borderRadius: "50%",
-            background: `radial-gradient(circle, rgba(255,80,0,0.25), rgba(255,40,0,0.08), transparent)`,
-            filter: `blur(${Math.random() * 3 + 2}px)`,
-            pointerEvents: "none",
-            zIndex: "4",
-            opacity: "0",
-          });
-        }
-
-        // flames rise upward with slight sway
-        const driftX = (Math.random() - 0.5) * 24;
-        const driftY = -(Math.random() * 30 + 15);
-        const sway = (Math.random() - 0.5) * 12;
-        flame.style.setProperty("--fx", `${driftX}px`);
-        flame.style.setProperty("--fy", `${driftY}px`);
-        flame.style.setProperty("--sx", `${sway}px`);
-        flame.style.animation = `flame-rise ${duration}s ease-out forwards`;
-
-        container.appendChild(flame);
-        setTimeout(() => flame.remove(), duration * 1000);
-      }
-    }, 40);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "relative",
-        overflow: "visible",
-      }}
-    >
+    <div className="flame-bar-wrap">
       <style>{`
-        @keyframes flame-rise {
-          0% {
-            opacity: 0;
-            transform: translateY(0) translateX(0) scaleY(1) scaleX(1);
-          }
-          10% {
-            opacity: 0.8;
-          }
-          30% {
-            opacity: 0.9;
-            transform: translateY(calc(var(--fy, -20px) * 0.3)) translateX(var(--sx, 0px)) scaleY(1.1) scaleX(0.9);
-          }
-          60% {
-            opacity: 0.5;
-            transform: translateY(calc(var(--fy, -20px) * 0.7)) translateX(var(--fx, 0px)) scaleY(0.8) scaleX(0.7);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(var(--fy, -20px)) translateX(calc(var(--fx, 0px) + var(--sx, 0px))) scaleY(0.3) scaleX(0.4);
-          }
+        .flame-bar-wrap {
+          position: relative;
+        }
+
+        /* Animated fire glow around the whole input */
+        .flame-bar-wrap::before {
+          content: '';
+          position: absolute;
+          inset: -3px;
+          border-radius: 18px;
+          background: conic-gradient(
+            from var(--flame-angle, 0deg),
+            #ff3d00, #ff6a00, #ff9500, #ffb700,
+            #ff9500, #ff6a00, #ff3d00, #cc2200,
+            #ff3d00
+          );
+          opacity: 0.5;
+          filter: blur(6px);
+          z-index: -1;
+          animation: flame-rotate 3s linear infinite, flame-pulse 2s ease-in-out infinite;
+        }
+
+        /* Inner glow layer */
+        .flame-bar-wrap::after {
+          content: '';
+          position: absolute;
+          inset: -1px;
+          border-radius: 17px;
+          background: conic-gradient(
+            from var(--flame-angle2, 180deg),
+            transparent 30%,
+            rgba(255,61,0,0.3) 45%,
+            rgba(255,150,0,0.4) 50%,
+            rgba(255,61,0,0.3) 55%,
+            transparent 70%
+          );
+          opacity: 0.7;
+          filter: blur(2px);
+          z-index: -1;
+          animation: flame-rotate-reverse 2.5s linear infinite;
+        }
+
+        /* Flame tongues rising from bottom */
+        .flame-bar-wrap .flame-tongue {
+          position: absolute;
+          bottom: -2px;
+          width: 8px;
+          height: 20px;
+          border-radius: 50% 50% 20% 20%;
+          z-index: -1;
+          filter: blur(2px);
+          transform-origin: bottom center;
+        }
+
+        @property --flame-angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+
+        @property --flame-angle2 {
+          syntax: '<angle>';
+          initial-value: 180deg;
+          inherits: false;
+        }
+
+        @keyframes flame-rotate {
+          to { --flame-angle: 360deg; }
+        }
+
+        @keyframes flame-rotate-reverse {
+          to { --flame-angle2: -180deg; }
+        }
+
+        @keyframes flame-pulse {
+          0%, 100% { opacity: 0.35; filter: blur(6px); }
+          50% { opacity: 0.6; filter: blur(8px); }
+        }
+
+        @keyframes tongue-flicker-1 {
+          0%, 100% { height: 14px; opacity: 0.7; transform: scaleX(1) rotate(-2deg); }
+          25% { height: 22px; opacity: 0.9; transform: scaleX(0.8) rotate(3deg); }
+          50% { height: 18px; opacity: 0.6; transform: scaleX(1.1) rotate(-1deg); }
+          75% { height: 26px; opacity: 0.85; transform: scaleX(0.7) rotate(4deg); }
+        }
+
+        @keyframes tongue-flicker-2 {
+          0%, 100% { height: 18px; opacity: 0.6; transform: scaleX(0.9) rotate(2deg); }
+          30% { height: 28px; opacity: 0.8; transform: scaleX(0.7) rotate(-3deg); }
+          60% { height: 12px; opacity: 0.5; transform: scaleX(1.2) rotate(1deg); }
+          80% { height: 24px; opacity: 0.9; transform: scaleX(0.8) rotate(-4deg); }
+        }
+
+        @keyframes tongue-flicker-3 {
+          0%, 100% { height: 10px; opacity: 0.5; transform: scaleX(1) rotate(1deg); }
+          20% { height: 20px; opacity: 0.8; transform: scaleX(0.6) rotate(-2deg); }
+          45% { height: 16px; opacity: 0.7; transform: scaleX(1.1) rotate(3deg); }
+          70% { height: 24px; opacity: 0.85; transform: scaleX(0.7) rotate(-1deg); }
         }
       `}</style>
+
+      {/* Flame tongues along bottom edge */}
+      {[10, 18, 28, 38, 50, 60, 72, 85, 92].map((pct, i) => (
+        <span
+          key={i}
+          className="flame-tongue"
+          style={{
+            left: `${pct}%`,
+            width: 6 + (i % 3) * 3,
+            background: `radial-gradient(ellipse at bottom, ${
+              i % 3 === 0
+                ? "rgba(255,180,0,0.8), rgba(255,80,0,0.4), transparent"
+                : i % 3 === 1
+                  ? "rgba(255,100,0,0.7), rgba(255,40,0,0.3), transparent"
+                  : "rgba(255,200,50,0.6), rgba(255,100,0,0.3), transparent"
+            })`,
+            animation: `tongue-flicker-${(i % 3) + 1} ${0.8 + (i % 4) * 0.3}s ease-in-out ${i * 0.15}s infinite`,
+          }}
+        />
+      ))}
+
       {children}
     </div>
   );
