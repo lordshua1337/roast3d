@@ -74,21 +74,21 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                {tab === "lp" ? "landing page" : "ad"}
+                {tab === "lp" ? "Landing Page" : "Ad"}
               </span>
-              {" "}isn't converting.
+              {" "}Sucks.
             </h1>
             <p
               className="fb"
               style={{
-                fontSize: "clamp(16px,2.5vw,22px)",
-                color: "#fff",
-                fontStyle: "italic",
-                lineHeight: 1.5,
+                fontSize: 15,
+                color: "rgba(255,255,255,.4)",
+                lineHeight: 1.65,
                 marginBottom: 28,
+                maxWidth: 440,
               }}
             >
-              Only one way to find out.
+              Paste the URL. We'll prove it, then help you fix it — for free.
             </p>
             <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
               {[
