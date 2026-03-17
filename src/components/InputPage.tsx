@@ -65,8 +65,8 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "48px 32px 80px", position: "relative", zIndex: 5 }}>
         <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 420px", minWidth: 300 }}>
-            <h1 className="fu" style={{ fontSize: "clamp(28px,5vw,46px)", lineHeight: 1.15, marginBottom: 20 }}>
-              Your {tab === "lp" ? "landing page" : "ad"} is{" "}
+            <h1 className="fu" style={{ fontSize: "clamp(28px,5vw,46px)", lineHeight: 1.15, marginBottom: 12 }}>
+              Think your{" "}
               <span
                 style={{
                   background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
@@ -74,26 +74,41 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                embarrassing
+                {tab === "lp" ? "landing page" : "ad creative"}
               </span>
-              <br />
-              <span style={{ fontSize: "clamp(18px,3vw,28px)", color: "rgba(255,255,255,.35)" }}>
-                Let AI prove it.
-              </span>
+              {" "}is why you can't get leads?
             </h1>
             <p
               className="fb"
               style={{
-                fontSize: 15,
-                color: "rgba(255,255,255,.4)",
-                lineHeight: 1.65,
-                marginBottom: 32,
-                maxWidth: 440,
+                fontSize: "clamp(16px,2.5vw,22px)",
+                color: "#fff",
+                fontStyle: "italic",
+                lineHeight: 1.5,
+                marginBottom: 28,
               }}
             >
-              Paste your URL. Get a brutally honest roast. Then fix it before your
-              competitors screenshot it.
+              Only one way to find out.
             </p>
+            <svg
+              width="180"
+              height="60"
+              viewBox="0 0 180 60"
+              fill="none"
+              style={{ marginBottom: 12, marginLeft: 8, display: "block" }}
+            >
+              <path
+                d="M4 4 C 40 4, 60 8, 90 20 S 150 50, 170 52"
+                stroke="rgba(255,255,255,0.35)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <polygon
+                points="164,46 174,54 162,54"
+                fill="rgba(255,255,255,0.35)"
+              />
+            </svg>
             <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
               {[
                 { k: "lp" as TabType, l: "Landing Page", I: Smartphone },
