@@ -1,115 +1,206 @@
+import { useEffect, useRef, useCallback } from "react";
+
 interface FlameBarProps {
   children: React.ReactNode;
 }
 
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  size: number;
+}
+
+// Color temperature gradient: white-hot core -> yellow -> orange -> red -> transparent
+// Each stop: [r, g, b, a] at lifecycle percentage
+const FIRE_GRADIENT: [number, number, number, number][] = [
+  [255, 255, 220, 0.0],   // born: invisible
+  [255, 255, 200, 0.9],   // 10%: white-hot
+  [255, 220, 80, 0.85],   // 25%: bright yellow
+  [255, 160, 20, 0.7],    // 45%: orange
+  [255, 80, 0, 0.5],      // 65%: deep orange
+  [200, 30, 0, 0.25],     // 85%: dark red
+  [120, 10, 0, 0.0],      // 100%: gone
+];
+
+function lerpColor(t: number): [number, number, number, number] {
+  const steps = FIRE_GRADIENT.length - 1;
+  const idx = t * steps;
+  const lo = Math.floor(idx);
+  const hi = Math.min(lo + 1, steps);
+  const frac = idx - lo;
+
+  return [
+    FIRE_GRADIENT[lo][0] + (FIRE_GRADIENT[hi][0] - FIRE_GRADIENT[lo][0]) * frac,
+    FIRE_GRADIENT[lo][1] + (FIRE_GRADIENT[hi][1] - FIRE_GRADIENT[lo][1]) * frac,
+    FIRE_GRADIENT[lo][2] + (FIRE_GRADIENT[hi][2] - FIRE_GRADIENT[lo][2]) * frac,
+    FIRE_GRADIENT[lo][3] + (FIRE_GRADIENT[hi][3] - FIRE_GRADIENT[lo][3]) * frac,
+  ];
+}
+
 export function FlameBar({ children }: FlameBarProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<Particle[]>([]);
+  const rafRef = useRef<number>(0);
+
+  const emit = useCallback((w: number, h: number) => {
+    const particles = particlesRef.current;
+    // emit from bottom edge primarily
+    const count = 3 + Math.floor(Math.random() * 3); // 3-5 per frame
+
+    for (let i = 0; i < count; i++) {
+      const edge = Math.random();
+      let x: number;
+      let y: number;
+      let vx: number;
+      let vy: number;
+
+      if (edge < 0.55) {
+        // bottom edge
+        x = Math.random() * w;
+        y = h;
+        vx = (Math.random() - 0.5) * 0.8;
+        vy = -(Math.random() * 1.5 + 1.0);
+      } else if (edge < 0.72) {
+        // top edge
+        x = Math.random() * w;
+        y = 0;
+        vx = (Math.random() - 0.5) * 0.6;
+        vy = -(Math.random() * 1.0 + 0.5);
+      } else if (edge < 0.86) {
+        // left edge
+        x = 0;
+        y = h * 0.2 + Math.random() * h * 0.8;
+        vx = -(Math.random() * 0.5 + 0.3);
+        vy = -(Math.random() * 1.2 + 0.5);
+      } else {
+        // right edge
+        x = w;
+        y = h * 0.2 + Math.random() * h * 0.8;
+        vx = Math.random() * 0.5 + 0.3;
+        vy = -(Math.random() * 1.2 + 0.5);
+      }
+
+      const maxLife = 30 + Math.random() * 30; // 30-60 frames (~0.5-1s)
+
+      particles.push({
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        maxLife,
+        size: Math.random() * 6 + 3,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      const rect = container.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      // extend canvas beyond container for flames that rise above
+      const pad = 40;
+      canvas.width = (rect.width + pad * 2) * dpr;
+      canvas.height = (rect.height + pad * 2) * dpr;
+      canvas.style.width = `${rect.width + pad * 2}px`;
+      canvas.style.height = `${rect.height + pad * 2}px`;
+      canvas.style.left = `${-pad}px`;
+      canvas.style.top = `${-pad}px`;
+      ctx.scale(dpr, dpr);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const loop = () => {
+      const rect = container.getBoundingClientRect();
+      const pad = 40;
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // additive blending -- overlapping particles glow brighter
+      ctx.globalCompositeOperation = "lighter";
+
+      emit(w, h);
+
+      const particles = particlesRef.current;
+      const alive: Particle[] = [];
+
+      for (const p of particles) {
+        p.life++;
+        const t = p.life / p.maxLife;
+        if (t >= 1) continue;
+
+        // physics: upward acceleration (hot gas), slight horizontal turbulence
+        p.vy -= 0.02; // upward acceleration
+        p.vx += (Math.random() - 0.5) * 0.15; // turbulence
+        p.x += p.vx;
+        p.y += p.vy;
+
+        const [r, g, b, a] = lerpColor(t);
+        const size = p.size * (1 - t * 0.5); // shrink as it ages
+
+        // draw as soft radial gradient circle
+        const grd = ctx.createRadialGradient(
+          pad + p.x, pad + p.y, 0,
+          pad + p.x, pad + p.y, size
+        );
+        grd.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${a})`);
+        grd.addColorStop(0.4, `rgba(${r|0},${g|0},${b|0},${a * 0.6})`);
+        grd.addColorStop(1, `rgba(${r|0},${g|0},${b|0},0)`);
+
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(pad + p.x, pad + p.y, size, 0, Math.PI * 2);
+        ctx.fill();
+
+        alive.push(p);
+      }
+
+      particlesRef.current = alive;
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", resize);
+    };
+  }, [emit]);
+
   return (
-    <div className="flame-bar-wrap">
-      <style>{`
-        .flame-bar-wrap {
-          position: relative;
-        }
-
-        /* Subtle ambient glow -- just warmth, not a spotlight */
-        .flame-bar-wrap::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          border-radius: 18px;
-          background: conic-gradient(
-            from var(--flame-angle, 0deg),
-            transparent 20%,
-            rgba(255,61,0,0.15) 30%,
-            rgba(255,150,0,0.2) 35%,
-            rgba(255,61,0,0.15) 40%,
-            transparent 50%,
-            transparent 70%,
-            rgba(255,80,0,0.12) 80%,
-            rgba(255,120,0,0.18) 85%,
-            rgba(255,80,0,0.12) 90%,
-            transparent 100%
-          );
-          filter: blur(4px);
-          z-index: -1;
-          animation: flame-rotate 4s linear infinite;
-        }
-
-        /* Flame tongues container */
-        .flame-tongue {
-          position: absolute;
-          bottom: -4px;
-          z-index: 6;
-          pointer-events: none;
-          transform-origin: bottom center;
-        }
-
-        @property --flame-angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-
-        @keyframes flame-rotate {
-          to { --flame-angle: 360deg; }
-        }
-
-        @keyframes flick-a {
-          0%, 100% { height: 16px; opacity: 0.8; transform: scaleX(1) rotate(-2deg); }
-          20% { height: 24px; opacity: 0.9; transform: scaleX(0.7) rotate(4deg); }
-          40% { height: 12px; opacity: 0.6; transform: scaleX(1.2) rotate(-1deg); }
-          60% { height: 28px; opacity: 0.95; transform: scaleX(0.6) rotate(5deg); }
-          80% { height: 18px; opacity: 0.7; transform: scaleX(0.9) rotate(-3deg); }
-        }
-
-        @keyframes flick-b {
-          0%, 100% { height: 12px; opacity: 0.7; transform: scaleX(0.9) rotate(1deg); }
-          25% { height: 20px; opacity: 0.85; transform: scaleX(0.65) rotate(-3deg); }
-          50% { height: 26px; opacity: 0.9; transform: scaleX(0.55) rotate(6deg); }
-          75% { height: 14px; opacity: 0.6; transform: scaleX(1.1) rotate(-2deg); }
-        }
-
-        @keyframes flick-c {
-          0%, 100% { height: 10px; opacity: 0.6; transform: scaleX(1) rotate(2deg); }
-          30% { height: 22px; opacity: 0.85; transform: scaleX(0.7) rotate(-4deg); }
-          55% { height: 16px; opacity: 0.75; transform: scaleX(0.85) rotate(3deg); }
-          80% { height: 26px; opacity: 0.9; transform: scaleX(0.5) rotate(-5deg); }
-        }
-      `}</style>
-
-      {/* Flame tongues -- tapered gradient shapes flickering up from bottom */}
-      {[
-        { pct: 8, w: 7, anim: "a", dur: 0.7, delay: 0 },
-        { pct: 15, w: 5, anim: "b", dur: 0.9, delay: 0.1 },
-        { pct: 22, w: 8, anim: "c", dur: 0.8, delay: 0.25 },
-        { pct: 30, w: 6, anim: "a", dur: 1.0, delay: 0.15 },
-        { pct: 38, w: 9, anim: "b", dur: 0.75, delay: 0.3 },
-        { pct: 46, w: 5, anim: "c", dur: 0.85, delay: 0.05 },
-        { pct: 54, w: 7, anim: "a", dur: 0.95, delay: 0.2 },
-        { pct: 62, w: 8, anim: "b", dur: 0.7, delay: 0.35 },
-        { pct: 70, w: 6, anim: "c", dur: 0.9, delay: 0.1 },
-        { pct: 78, w: 9, anim: "a", dur: 0.8, delay: 0.25 },
-        { pct: 85, w: 5, anim: "b", dur: 1.0, delay: 0.15 },
-        { pct: 92, w: 7, anim: "c", dur: 0.75, delay: 0.3 },
-      ].map((f, i) => (
-        <span
-          key={i}
-          className="flame-tongue"
-          style={{
-            left: `${f.pct}%`,
-            width: f.w,
-            borderRadius: "50% 50% 20% 20%",
-            background:
-              f.anim === "a"
-                ? "linear-gradient(to top, rgba(255,60,0,0.9), rgba(255,150,0,0.6), rgba(255,200,50,0.2), transparent)"
-                : f.anim === "b"
-                  ? "linear-gradient(to top, rgba(255,80,0,0.85), rgba(255,120,0,0.5), rgba(255,180,0,0.15), transparent)"
-                  : "linear-gradient(to top, rgba(255,40,0,0.8), rgba(255,100,0,0.5), rgba(255,160,40,0.2), transparent)",
-            animation: `flick-${f.anim} ${f.dur}s ease-in-out ${f.delay}s infinite`,
-          }}
-        />
-      ))}
-
-      {children}
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          zIndex: 5,
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 6 }}>
+        {children}
+      </div>
     </div>
   );
 }
