@@ -1,12 +1,14 @@
 import { useState } from "react";
 import {
   ArrowLeft, Download, Lock, Copy, FileText,
-  Flame, Skull, FlaskConical, ChevronRight, Swords,
-  Target, TrendingUp, Type, Gauge, MonitorSmartphone,
+  Flame, Skull, Swords,
+  TrendingUp, Type, Gauge, MonitorSmartphone,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { Ring } from "./Ring";
 import { DiagCard } from "./DiagCard";
+import { HotTakeSection } from "./HotTakeSection";
+import { RecommendationsSection } from "./RecommendationsSection";
 import { getGrade, getGradeColor } from "../utils/scoring";
 import { exportRoastPDF } from "../utils/export-pdf";
 import type { RoastResult, CategoryDef } from "../types/roast";
@@ -294,185 +296,13 @@ export function ReportPage({ result, cats, onReset, onUpgrade, onRoadmap }: Repo
           </div>
         </div>
 
-        {/* Hot take */}
-        <div
-          style={{
-            marginBottom: 48,
-            padding: "48px 44px",
-            borderRadius: 24,
-            background: "#0a0a0a",
-            color: "#fff",
-            position: "relative",
-            overflow: "hidden",
-            animation: "fadeUp .5s .3s cubic-bezier(.16,1,.3,1) both",
-          }}
-        >
-          <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 5, background: "linear-gradient(90deg,#FF3D00,#ff8a50,#ff6a00,#FF3D00)" }} />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-30%",
-              right: "-10%",
-              width: 400,
-              height: 400,
-              borderRadius: "50%",
-              background: "radial-gradient(circle,rgba(255,61,0,.06),transparent 70%)",
-              pointerEvents: "none",
-            }}
-          />
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            <Target size={24} color="#FF3D00" />
-            <span className="fm" style={{ fontSize: 10, color: "rgba(255,255,255,.6)", letterSpacing: 4, textTransform: "uppercase" }}>
-              THE ONE THING THAT MATTERS
-            </span>
-          </div>
-          <h3
-            className="fb2"
-            style={{ fontSize: "clamp(36px,7vw,56px)", color: "#fff", lineHeight: 1.05, marginBottom: 24, letterSpacing: 1 }}
-          >
-            IF YOU FIX NOTHING ELSE, FIX THIS.
-          </h3>
-          {result.potential && (
-            <p className="fb" style={{ fontSize: 17, color: "rgba(255,255,255,.45)", lineHeight: 1.7, marginBottom: 20, maxWidth: 600 }}>
-              {result.potential}
-            </p>
-          )}
-          <p className="fb" style={{ fontSize: 20, color: "rgba(255,255,255,.9)", lineHeight: 1.75, maxWidth: 640 }}>
-            {result.hot_take}
-          </p>
-        </div>
+        <HotTakeSection hotTake={result.hot_take} potential={result.potential} />
 
-        {/* Recommendations */}
-        <div style={{ marginBottom: 48, animation: "fadeUp .5s .4s cubic-bezier(.16,1,.3,1) both" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-            <h3 className="fd" style={{ fontSize: 24, color: "#111", display: "flex", alignItems: "center", gap: 10 }}>
-              <FlaskConical size={22} />
-              Recommendations
-            </h3>
-            <button
-              onClick={onRoadmap}
-              className="fu"
-              style={{
-                background: "none",
-                border: "1px solid #ddd",
-                padding: "8px 16px",
-                borderRadius: 8,
-                fontSize: 12,
-                color: "#888",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              Roadmap <ChevronRight size={14} />
-            </button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {(result.recommendations || []).slice(0, 3).map((r, i) => (
-              <div
-                key={i}
-                style={{
-                  gridColumn: i === 0 ? "span 2" : "span 1",
-                  background: "#fff",
-                  borderRadius: 14,
-                  padding: 24,
-                  border: "1px solid #eee",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span className="fd" style={{ fontSize: 22, color: "#ddd" }}>
-                      {i + 1}
-                    </span>
-                    <p className="fu" style={{ fontSize: 15, color: "#222" }}>
-                      {r.title}
-                    </p>
-                  </div>
-                  <span
-                    className="fm"
-                    style={{
-                      fontSize: 9,
-                      letterSpacing: 1.5,
-                      textTransform: "uppercase",
-                      flexShrink: 0,
-                      padding: "4px 10px",
-                      borderRadius: 4,
-                      background: r.priority === "critical" ? "#fef2f2" : "#fffbeb",
-                      color: r.priority === "critical" ? "#dc2626" : "#d97706",
-                      border: `1px solid ${r.priority === "critical" ? "#fecaca" : "#fde68a"}`,
-                    }}
-                  >
-                    {r.priority}
-                  </span>
-                </div>
-                <p className="fb" style={{ fontSize: 13, color: "#888", lineHeight: 1.6 }}>
-                  {r.description}
-                </p>
-              </div>
-            ))}
-          </div>
-          {(result.recommendations || []).length > 3 && (
-            <div style={{ position: "relative", marginTop: 10 }}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 10,
-                  filter: "blur(4px)",
-                  opacity: 0.4,
-                  pointerEvents: "none",
-                }}
-              >
-                {(result.recommendations || []).slice(3, 7).map((r, i) => (
-                  <div key={i} style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid #eee" }}>
-                    <p className="fu" style={{ fontSize: 14, color: "#222", marginBottom: 4 }}>
-                      {r.title}
-                    </p>
-                    <p className="fb" style={{ fontSize: 12, color: "#aaa" }}>
-                      {(r.description || "").slice(0, 60)}...
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 12,
-                }}
-              >
-                <p className="fu" style={{ fontSize: 16, color: "#111", display: "flex", alignItems: "center", gap: 6 }}>
-                  <Lock size={16} />
-                  {(result.recommendations || []).length - 3} more recommendations
-                </p>
-                <button
-                  onClick={onUpgrade}
-                  className="fu"
-                  style={{
-                    background: "#FF3D00",
-                    border: "none",
-                    color: "#fff",
-                    padding: "14px 32px",
-                    borderRadius: 12,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    boxShadow: "0 4px 16px rgba(255,61,0,.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  Unlock All <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        <RecommendationsSection
+          recommendations={result.recommendations || []}
+          onRoadmap={onRoadmap}
+          onUpgrade={onUpgrade}
+        />
 
         {/* Compare mode teaser */}
         <div style={{ background: "#fff", borderRadius: 18, padding: 32, border: "2px dashed #ddd", textAlign: "center", marginBottom: 48 }}>
