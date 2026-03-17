@@ -124,8 +124,8 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
             <div
               style={{
                 display: "flex",
-                background: "#0a0a0a",
-                border: "none",
+                background: "rgba(255,255,255,.03)",
+                border: "2px solid rgba(255,255,255,.08)",
                 borderRadius: 16,
                 overflow: "hidden",
               }}
