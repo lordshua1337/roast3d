@@ -37,8 +37,8 @@ export function FlameBar({ children }: FlameBarProps) {
         animation: `flame-float ${duration}s ease-out forwards`,
       });
 
-      const driftX = (Math.random() - 0.5) * 20;
-      const driftY = -(Math.random() * 35 + 20);
+      const driftX = (Math.random() - 0.5) * 30;
+      const driftY = Math.random() * 20 + 10;
       particle.style.setProperty("--dx", `${driftX}px`);
       particle.style.setProperty("--dy", `${driftY}px`);
 
