@@ -4,6 +4,7 @@ import {
   Smartphone, Clapperboard, Flame,
 } from "lucide-react";
 import { Logo } from "./Logo";
+import { FlameBar } from "./FlameBar";
 import type { TabType } from "../types/roast";
 
 interface InputPageProps {
@@ -119,6 +120,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                 </button>
               ))}
             </div>
+            <FlameBar>
             <div
               style={{
                 display: "flex",
@@ -177,6 +179,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                 ROAST IT <Flame size={16} />
               </button>
             </div>
+            </FlameBar>
             {error && (
               <p className="fm" style={{ color: "#FF3D00", fontSize: 12, marginTop: 12 }}>
                 {error}
