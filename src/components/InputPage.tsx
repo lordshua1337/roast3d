@@ -56,7 +56,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
           zIndex: 10,
         }}
       >
-        <Logo size="sm" />
+        <Logo size="sm" flames />
         <span className="fm" style={{ fontSize: 11, color: "rgba(255,255,255,.2)", letterSpacing: 1 }}>
           Free &middot; Fast &middot; Unsparing
         </span>
