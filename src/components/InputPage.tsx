@@ -65,43 +65,7 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "48px 32px 80px", position: "relative", zIndex: 5 }}>
         <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 420px", minWidth: 300 }}>
-            <h1 className="fu" style={{ lineHeight: 0.95, marginBottom: 12 }}>
-              <span style={{ fontSize: "clamp(28px,5vw,46px)", display: "block" }}>
-                Your{" "}
-                <span
-                  style={{
-                    background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  {tab === "lp" ? "Landing Page" : "Ad"}
-                </span>
-              </span>
-              <span
-                style={{
-                  fontSize: "clamp(72px,14vw,130px)",
-                  display: "block",
-                  letterSpacing: -2,
-                  textTransform: "uppercase",
-                }}
-              >
-                Sucks.
-              </span>
-            </h1>
-            <p
-              className="fb"
-              style={{
-                fontSize: 15,
-                color: "rgba(255,255,255,.4)",
-                lineHeight: 1.65,
-                marginBottom: 28,
-                maxWidth: 440,
-              }}
-            >
-              Paste the URL. We'll prove it, then help you fix it — for free.
-            </p>
-            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
               {[
                 { k: "lp" as TabType, l: "Landing Page", I: Smartphone },
                 { k: "ad" as TabType, l: "Ad Creative", I: Clapperboard },
@@ -131,6 +95,54 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
                 </button>
               ))}
             </div>
+            <h1 className="fu" style={{ lineHeight: 0.95, marginBottom: 0 }}>
+              <span style={{ fontSize: "clamp(28px,5vw,46px)", display: "block" }}>
+                Your{" "}
+                <span
+                  style={{
+                    background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {tab === "lp" ? "Landing Page" : "Ad"}
+                </span>
+              </span>
+              <span
+                style={{
+                  fontSize: "clamp(72px,14vw,130px)",
+                  display: "block",
+                  letterSpacing: -2,
+                  textTransform: "uppercase",
+                }}
+              >
+                Sucks.
+              </span>
+            </h1>
+            <p
+              className="fd"
+              style={{
+                fontSize: "clamp(18px,3vw,26px)",
+                fontStyle: "italic",
+                color: "#fff",
+                marginTop: 4,
+                marginBottom: 12,
+              }}
+            >
+              Let's Roast It
+            </p>
+            <p
+              className="fb"
+              style={{
+                fontSize: 15,
+                color: "rgba(255,255,255,.4)",
+                lineHeight: 1.65,
+                marginBottom: 20,
+                maxWidth: 440,
+              }}
+            >
+              Paste the URL. We'll prove it, then help you fix it — for free.
+            </p>
             <FlameBar>
             <div
               style={{
@@ -197,7 +209,17 @@ export function InputPage({ tab, setTab, input, setInput, error, onRoast }: Inpu
               </p>
             )}
             {!error && (
-              <p className="fm" style={{ fontSize: 11, color: "rgba(255,255,255,.15)", marginTop: 14 }}>
+              <p
+                className="fm"
+                style={{
+                  fontSize: 11,
+                  marginTop: 14,
+                  background: "linear-gradient(135deg,#FF3D00,#ff8a50,#ff6a00)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: 0.5,
+                }}
+              >
                 No signup. No paywall. Just pain.
               </p>
             )}
